@@ -1,27 +1,38 @@
-Overview: SCP (Simple Calculator Protocol) client-server protocol that give 
-the client the ability to do mathematical operation on a server and get the result
-as the awnser to the question
+# SCP SIMPLE CALULATOR PROTOCAL
 
-For the communication will require an IP and a Port. 
-The server will close the connection on request, or if something unexpenced happends
+## Overview
+scp is a client-server protocal. The client connects to a server and askes for a calculation to be do. The Server sends a responses with the number or an error message if there is an error. 
 
-On the first call the server will send the possible operations and the syntax to use
 
-- ADD < number 1 >  < number 2 >
-- SUB < number 1 >  < number 2 >
-- MUL < number 1 >  < number 2 >
-- DIV < number 1 >  < number 2 >
+## Transport layer protocal 
+scp uses TCP. The client establishes the connection. It has to know the IP address of the server. The server listens on TCP port 54545.
+The server closes the connection when the user sends the close commande. 
 
-and the server response :
+## Messages
 
-- RESPONSE to operation < request > is < result >
+In this projetct we are doing to implement the following functions: 
+- Addition : ADD <First_number> <Second_number> - This command will add two numbers 
+- Substration : SUB <First_number> <Second_number> - This command will subtract two numbers 
+- Multiplication : MULT <First_number> <Second_number> - This command will multiply two numbers 
+- Division : DIV <First_number> <Second_number> - This command will devide two numbers 
+- Quit : QUIT - This command will send the commande to the server to end the connection
 
-If the request is not possible 
+If request is not possible : 
+- "The request was not possible"
 
-- The request was not possible
+The server's response : 
+- "RESPONSE the operation: <operation> is <result>"
 
-If the client want to stop the session :
 
-- STOP
+The first message from server then connecting : 
+
+- ADD <First_number> <Second_number>
+- SUB <First_number> <Second_number>
+- MULT <First_number> <Second_number>
+- DIV <First_number> <Second_number>
+- QUIT
+
+
+
 
 
