@@ -6,20 +6,15 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Server {
     final int SERVER_PORT = 1234;
-    public String[] helloMessages;
+    public String helloMessages = "- ADD <First_number> <Second_number>\n" +
+            "- SUB <First_number> <Second_number>\n" +
+            "- MULT <First_number> <Second_number>\n" +
+            "- DIV <First_number> <Second_number>\n" +
+            "- QUIT";
 
     public static void main(String[] args) {
         Server server = new Server();
         server.run();
-    }
-
-    public Server() {
-        helloMessages = new String[5];
-        helloMessages[0] = "- ADD <First_number> <Second_number>";
-        helloMessages[1] = "- SUB <First_number> <Second_number>";
-        helloMessages[2] = "- MULT <First_number> <Second_number>";
-        helloMessages[3] = "- DIV <First_number> <Second_number>";
-        helloMessages[4] = "- QUIT";
     }
 
     private void run() {
@@ -34,11 +29,9 @@ public class Server {
                     System.out.println("New client connected");
 
                     // Send the hello message to the client
-                    for(String message : helloMessages) {
-                        out.write(message);
-                        out.newLine();
-                        out.flush();
-                    }
+                    out.write(helloMessages);
+                    out.newLine();
+                    out.flush();
 
                     String line;
                     String[] lineArgs;
