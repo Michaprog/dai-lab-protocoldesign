@@ -7,11 +7,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class Server {
     final int SERVER_PORT = 1234;
 
-    public String helloMessage = "- ADD <First_number> <Second_number>\n" +
-            "- SUB <First_number> <Second_number>\n" +
-            "- MULT <First_number> <Second_number>\n" +
-            "- DIV <First_number> <Second_number>\n" +
-            "- QUIT";
+    public String helloMessage1 = "- ADD <First_number> <Second_number>";
+    public String helloMessage2 = "- SUB <First_number> <Second_number>";
+    public String helloMessage3 = "- MULT <First_number> <Second_number>";
+    public String helloMessage4 = "- DIV <First_number> <Second_number>";
+    public String helloMessage5 = "- QUIT";
 
     public static void main(String[] args) {
         Server server = new Server();
@@ -30,7 +30,11 @@ public class Server {
                     System.out.println("New client connected");
 
                     // Send the hello message to the client
-                    out.write(helloMessage);
+                    out.write(helloMessage1);
+                    out.write(helloMessage2);
+                    out.write(helloMessage3);
+                    out.write(helloMessage4);
+                    out.write(helloMessage5);
                     out.newLine();
                     out.flush();
 
