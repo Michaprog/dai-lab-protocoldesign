@@ -6,16 +6,20 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Server {
     final int SERVER_PORT = 1234;
-
-    public String helloMessage1 = "- ADD <First_number> <Second_number>";
-    public String helloMessage2 = "- SUB <First_number> <Second_number>";
-    public String helloMessage3 = "- MULT <First_number> <Second_number>";
-    public String helloMessage4 = "- DIV <First_number> <Second_number>";
-    public String helloMessage5 = "- QUIT";
+    public String[] helloMessages;
 
     public static void main(String[] args) {
         Server server = new Server();
         server.run();
+    }
+
+    public Server() {
+        helloMessages = new String[5];
+        helloMessages[0] = "- ADD <First_number> <Second_number>";
+        helloMessages[1] = "- SUB <First_number> <Second_number>";
+        helloMessages[2] = "- MULT <First_number> <Second_number>";
+        helloMessages[3] = "- DIV <First_number> <Second_number>";
+        helloMessages[4] = "- QUIT";
     }
 
     private void run() {
@@ -30,13 +34,11 @@ public class Server {
                     System.out.println("New client connected");
 
                     // Send the hello message to the client
-                    out.write(helloMessage1);
-                    out.write(helloMessage2);
-                    out.write(helloMessage3);
-                    out.write(helloMessage4);
-                    out.write(helloMessage5);
-                    out.newLine();
-                    out.flush();
+                    for(String message : helloMessages) {
+                        out.write(message);
+                        out.newLine();
+                        out.flush();
+                    }
 
                     String line;
                     String[] lineArgs;
@@ -68,11 +70,13 @@ public class Server {
                                     out.flush();
                                     break;
                                 case "QUIT":
-                                    out.write("Goodbye!\n");
+                                    out.write("Goodbye!");
+                                    out.newLine();
                                     out.flush();
                                     return; // End the current client session
                                 default:
-                                    out.write("Unknown command.\n");
+                                    out.write("Unknown command.");
+                                    out.newLine();
                                     out.flush();
                                     break;
                             }
