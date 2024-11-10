@@ -7,9 +7,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class Client {
-    final String SERVER_ADDRESS = "1.2.3.4";
+    final String SERVER_ADDRESS = "localhost";
     final int SERVER_PORT = 1234;
 
     public static void main(String[] args) {
@@ -19,40 +20,54 @@ public class Client {
     }
 
     private void run() {
-
-    try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              var in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
              var out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8))) {
 
-            BufferedReader userInput = new BufferedReader(new InputStreamReader(null));
+            Scanner scanner = new Scanner(System.in);
 
-            // read the welcome message from the server
-            String welcomeMessage = in.readLine();
-            System.out.println(welcomeMessage);
+            // Read the welcome message from the server
+            String line;
+            while ((line = in.readLine()) != null && !line.equals("END")) {
+                System.out.println("SERVER: " + line);
+            }
 
-            while (userInput.readLine() != "QUIT") {
-                
+            String text;
+            System.out.print("CLIENT: Please enter a command : ");
+
+            while (true) {
+                text = scanner.nextLine();
+
                 // Send a message to the server
-                userInput = new BufferedReader(new InputStreamReader(System.in));
-                if (userInput.readLine().equals("")) {
-                    System.out.println("Please enter a message");
+                if (text.isEmpty()) {
+                    // No command given
+                    System.out.print("CLIENT: Please enter a command : ");
                     continue;
-                }else if (userInput.readLine().equals("QUIT")) {
+                } else if (text.equals("QUIT")) {
                     out.write("QUIT\n");
-                    socket.close();
+                    out.flush();
+                    System.out.println("CLIENT: Disconnecting....");
                     break;
                 }
-                String message = userInput.readLine();
-                out.write(message + "\n");
+
+                out.write(text + "\n");
                 out.flush();
 
-                // read the response from the server
-                String response = in.readLine();
-                System.out.println(response);
+                // Read the response from the server
+                line = in.readLine();
+                if (line == null) {  // Server has closed the connection
+                    System.out.println("CLIENT: Connection to server lost.");
+                    break;
+                }
+                System.out.println("SERVER: " + line);
+
+                System.out.print("CLIENT: Please enter a command : ");
             }
-            
+
         } catch (IOException e) {
-            System.out.println("Client: exception while using client socket: " + e);
+            System.out.println("CLIENT: Connection error: " + e.getMessage());
+        } finally {
+            System.out.println("CLIENT: Client terminated.");
         }
     }
 }

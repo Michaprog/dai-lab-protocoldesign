@@ -10,7 +10,7 @@ public class Server {
             "- SUB <First_number> <Second_number>\n" +
             "- MULT <First_number> <Second_number>\n" +
             "- DIV <First_number> <Second_number>\n" +
-            "- QUIT";
+            "- QUIT\n";
 
     public static void main(String[] args) {
         Server server = new Server();
@@ -30,6 +30,8 @@ public class Server {
 
                     // Send the hello message to the client
                     out.write(helloMessages);
+                    // Send the end marker
+                    out.write("END");
                     out.newLine();
                     out.flush();
 
@@ -38,9 +40,24 @@ public class Server {
 
                     // Handle client commands
                     while ((line = in.readLine()) != null) {
+
                         lineArgs = line.split(" ");
+                        if (lineArgs[0].equals("QUIT")) {
+                            System.out.println("Session is closed");
+                            out.write("Goodbye!");
+                            out.newLine();
+                            out.flush();
+                            break; // End the current client session
+                        } else if (lineArgs.length != 3) {
+                            out.write("The command length is not correct.");
+                            out.newLine();
+                            out.flush();
+                            continue;
+                        }
+
                         boolean argRight = argsCheck(lineArgs[1], lineArgs[2]);
-                        if(argRight) {
+
+                        if (argRight) {
                             switch (lineArgs[0]) {
                                 case "ADD":
                                     out.write(ADD(lineArgs[1], lineArgs[2]));
@@ -62,17 +79,16 @@ public class Server {
                                     out.newLine();
                                     out.flush();
                                     break;
-                                case "QUIT":
-                                    out.write("Goodbye!");
-                                    out.newLine();
-                                    out.flush();
-                                    return; // End the current client session
                                 default:
                                     out.write("Unknown command.");
                                     out.newLine();
                                     out.flush();
                                     break;
                             }
+                        } else {
+                            out.write("Invalide arguments.");
+                            out.newLine();
+                            out.flush();
                         }
                     }
 
@@ -89,21 +105,21 @@ public class Server {
         int x = Integer.parseInt(nb1);
         int y = Integer.parseInt(nb2);
         int result = x + y;
-        return Integer.toString(result);
+        return "RESPONSE the operation " + x + " + " + y + " = " + Integer.toString(result);
     }
 
     private static String SUB(String nb1, String nb2) {
         int x = Integer.parseInt(nb1);
         int y = Integer.parseInt(nb2);
         int result = x - y;
-        return Integer.toString(result);
+        return "RESPONSE the operation " + x + " - " + y + " = " + Integer.toString(result);
     }
 
     private static String MUL(String nb1, String nb2) {
         int x = Integer.parseInt(nb1);
         int y = Integer.parseInt(nb2);
         int result = x * y;
-        return Integer.toString(result);
+        return "RESPONSE the operation " + x + " * " + y + " = " + Integer.toString(result);
     }
 
     private static String DIV(String nb1, String nb2) {
@@ -113,23 +129,24 @@ public class Server {
             return "Error: Division by zero is not allowed.";
         }
         int result = x / y;
-        return Integer.toString(result);
+        return "RESPONSE the operation " + x + " / " + y + " = " + Integer.toString(result);
     }
 
     private static boolean argsCheck(String arg1, String arg2) {
-        if(arg1 == null || arg2 == null) {
-            throw new IllegalArgumentException();
+        boolean result = true;
+        if (arg1 == null || arg2 == null) {
+            result = false;
         }
-        for(char c : arg1.toCharArray()) {
-            if(!Character.isDigit(c)) {
-                throw new IllegalArgumentException();
+        for (char c : arg1.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                result = false;
             }
         }
-        for(char c : arg2.toCharArray()) {
-            if(!Character.isDigit(c)) {
-                throw new IllegalArgumentException();
+        for (char c : arg2.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                result = false;
             }
         }
-        return true;
+        return result;
     }
 }
