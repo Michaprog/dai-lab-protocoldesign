@@ -17,6 +17,9 @@ In this projetct we are doing to implement the following functions:
 - Division : DIV <First_number> <Second_number> - This command will devide two numbers 
 - Quit : QUIT - This command will send the commande to the server to end the connection
 
+The server send an "END" message to the client to mark the end of the hello message.
+The client checks for this sign, and lives the entry for the user to enter the command.
+
 If request is not possible : 
 - "The request was not possible"
 
